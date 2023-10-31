@@ -1,5 +1,5 @@
 import { WebGLRenderer, PerspectiveCamera, Scene, Vector3 } from 'three'
-import SeedScene from './assets/Scene.js'
+import SeedScene from './objects/Scene.js'
 
 const scene = new Scene()
 const camera = new PerspectiveCamera()
@@ -12,7 +12,7 @@ let mouseClick = false
 
 scene.add(seedScene);
 
-camera.position.set(0,3,-5);
+camera.position.set(0,3,-3);
 camera.lookAt(new Vector3(0,0,0));
 
 renderer.setPixelRatio(window.devicePixelRatio);

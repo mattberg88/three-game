@@ -1,4 +1,4 @@
-import { Group, BoxGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three';
+import { Group, BoxGeometry, Mesh, MeshBasicMaterial, Vector3, Ray } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import Projectile from './Projectile.js';
 
@@ -15,48 +15,43 @@ export default class Players extends Group {
     this.player1 = player1
     this.player2 = player2
     this.shotArray = []
+    this
     this.add(this.player1, this.player2)
   }
+  checkCollision(collidableMeshList, mesh) {
+    for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
+      var localVertex = mesh.geometry.vertices[vertexIndex].clone();
+      var globalVertex = mesh.matrix.multiplyVector3(localVertex);
+      var directionVector = globalVertex.subSelf( mesh.position );
 
-  // checkCollision() {
-  //   for (var vertexIndex = 0; vertexIndex < this.geometry.attributes.position.array.length; vertexIndex++)
-  //   {
-  //       var localVertex = new Vector3().fromBufferAttribute(this.geometry.attributes.position, vertexIndex).clone();
-  //       var globalVertex = localVertex.applyMatrix4(this.matrix);
-  //       var directionVector = globalVertex.sub( this.position );
-
-  //       var ray = new Raycaster( this.position, directionVector.clone().normalize() );
-  //       var collisionResults = ray.intersectObjects( collidableMeshList );
-  //       if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
-  //       {
-  //         console.log('hit')
-  //           // a collision occurred... do something...
-  //       }
-  //   }
-  // }
-
+      var ray = new Ray( mesh.position, directionVector.clone().normalize() );
+      var collisionResults = ray.intersectObjects( collidableMeshList );
+      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
+      {
+        console.log('hit')
+      }
+    }
+  }
   update(timeStamp, command, mousePos, mouseClick) {
     this.player1.lookAt(new Vector3(mousePos.x, 0, mousePos.y))
+
     if(mouseClick) {
       const shoot = new Projectile(timeStamp, this.player1, mousePos)
       this.shotArray.push({ projectile: shoot, time: timeStamp })
+      // this.checkCollision([
+      //   this.player2
+      // ], shoot)
       this.add(shoot)
-
-      console.log('click')
     }
+
     this.shotArray.forEach(s => {
       if((timeStamp-s.time) > 1000) {
         this.remove(s.projectile)
-        console.log('remove')
         this.shotArray.shift()
       } else {
         s.projectile.update()
       }
     })
-
-    // this.sword.position.set(new Vector3 (this.player1.position.x, 1, 0))
-
-    // this.player2.lookAt(this.player1.position)
 
     if(command === 87) {
       this.player1.position.z += 0.05
@@ -71,6 +66,5 @@ export default class Players extends Group {
     if(command === 68) {
       this.player1.position.x -= 0.05
     }
-    // this.rotation.y = timeStamp / 10000;
   }
 }
