@@ -1,37 +1,27 @@
 import { Group, BoxGeometry, Mesh, MeshBasicMaterial, Vector3, Ray } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import Projectile from './Projectile.js';
+import { checkTouching } from '../utils/physics.js';
 
 export default class Players extends Group {
   constructor() {
     super();
     const geometry = new BoxGeometry( 0.1, 0.1, 0.1 );
-    const material = new MeshBasicMaterial( {color: 'gray'} );
-
-    const player1 = new Mesh( geometry, material );
-    const player2 = new Mesh( geometry, material );
+    const grayMaterial = new MeshBasicMaterial( {color: 'gray'} );
+    const redMaterial = new MeshBasicMaterial( {color: 'red'} );
+    const player1 = new Mesh( geometry, grayMaterial );
+    const player2 = new Mesh( geometry, grayMaterial );
     player1.position.set(0,0.05,-1)
     player2.position.set(0,0.05,0)
+
+    this.grayMaterial = grayMaterial
+    this.redMaterial = redMaterial
     this.player1 = player1
     this.player2 = player2
     this.shotArray = []
     this
     this.add(this.player1, this.player2)
   }
-  checkCollision(collidableMeshList, mesh) {
-    for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
-      var localVertex = mesh.geometry.vertices[vertexIndex].clone();
-      var globalVertex = mesh.matrix.multiplyVector3(localVertex);
-      var directionVector = globalVertex.subSelf( mesh.position );
 
-      var ray = new Ray( mesh.position, directionVector.clone().normalize() );
-      var collisionResults = ray.intersectObjects( collidableMeshList );
-      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
-      {
-        console.log('hit')
-      }
-    }
-  }
   update(timeStamp, command, mousePos, mouseClick) {
     this.player1.lookAt(new Vector3(mousePos.x, 0, mousePos.y))
 
@@ -50,6 +40,13 @@ export default class Players extends Group {
         this.shotArray.shift()
       } else {
         s.projectile.update()
+        if(checkTouching(s.projectile.mesh, this.player2)) {
+          this.player2.material = this.redMaterial
+          setTimeout(() => this.player2.material = this.grayMaterial, 100)
+
+
+          console.log('hit')
+        }
       }
     })
 

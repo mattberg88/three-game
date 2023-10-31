@@ -1,4 +1,4 @@
-import { Group, Vector3, Raycaster } from 'three';
+import { Group } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export default class GameObject extends Group {
@@ -8,8 +8,5 @@ export default class GameObject extends Group {
     loader.load(obj, (gltf)=>{
       this.add(gltf.scene);
     });
-  }
-
-  update(timeStamp, command, camera) {
   }
 }

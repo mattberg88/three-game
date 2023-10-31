@@ -1,6 +1,6 @@
-import { WebGLRenderer, PerspectiveCamera, Scene, Vector3 } from 'three'
-import SeedScene from './objects/Scene.js'
-
+import { WebGLRenderer, PerspectiveCamera, Scene, Vector3, Clock } from 'three'
+import SeedScene from './classes/Scene.js'
+const clock = new Clock()
 const scene = new Scene()
 const camera = new PerspectiveCamera()
 const renderer = new WebGLRenderer({antialias: true})
@@ -9,18 +9,18 @@ let command = 0
 const vec = new Vector3()
 const mousePos = new Vector3()
 let mouseClick = false
-
 scene.add(seedScene);
 
 camera.position.set(0,3,-3);
 camera.lookAt(new Vector3(0,0,0));
 
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setClearColor(0x7ec0ee, 1);
+renderer.setClearColor(0xaee0ff, 1);
 
 const onAnimationFrameHandler = (timeStamp) => {
+  let deltaTime = clock.getDelta();
   renderer.render(scene, camera);
-  seedScene.update && seedScene.update(timeStamp, command, mousePos, mouseClick);
+  seedScene.update(timeStamp, command, {mousePos, mouseClick}, camera);
   mouseClick = false
   window.requestAnimationFrame(onAnimationFrameHandler);
 }
@@ -35,12 +35,12 @@ const windowResizeHanlder = () => {
 windowResizeHanlder();
 
 const keydownHandler = (event) => {
-  command = event.which
+  command = event.key
 }
 
 const keyupHandler = (event) => {
-  if(command === event.which) {
-    command = 0
+  if(command === event.key) {
+    command = ''
   }
 }
 
