@@ -16,10 +16,15 @@ export default class Character extends Group {
     const shape = new Box(new Vec3(0.1, 0.1, 0.1))
     this.body.addShape(shape)
     world.addBody(this.body)
-
   }
+
   setPosition(pos) {
     this.body.position.set(pos.x, pos.y, pos.z)
     this.mesh.position.set(pos.x, pos.y, pos.z)
+  }
+
+  update(time) {
+    this.mesh.position.copy(this.body.position)
+    this.mesh.quaternion.copy(this.body.quaternion)
   }
 }

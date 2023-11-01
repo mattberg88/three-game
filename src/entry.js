@@ -1,6 +1,5 @@
 import { WebGLRenderer, PerspectiveCamera, Scene, Vector3, Clock } from 'three'
 import SeedScene from './classes/Scene.js'
-const clock = new Clock()
 const scene = new Scene()
 const camera = new PerspectiveCamera()
 const renderer = new WebGLRenderer({antialias: true})
@@ -18,9 +17,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(0xaee0ff, 1);
 
 const onAnimationFrameHandler = (timeStamp) => {
-  let deltaTime = clock.getDelta();
   renderer.render(scene, camera);
-  seedScene.update(timeStamp, command, {mousePos, mouseClick}, camera);
+  seedScene.update(command, {mousePos, mouseClick}, camera);
   mouseClick = false
   window.requestAnimationFrame(onAnimationFrameHandler);
 }
