@@ -1,6 +1,7 @@
 export const checkTouching = (a, list) => {
   const collided = []
-  list.forEach((d) => {
+  list.forEach((l) => {
+    const d = l.mesh
     let b1 = a.position.y - a.geometry.parameters.height / 2;
     let t1 = a.position.y + a.geometry.parameters.height / 2;
     let r1 = a.position.x + a.geometry.parameters.width / 2;
@@ -16,7 +17,7 @@ export const checkTouching = (a, list) => {
     if (t1 < b2 || r1 < l2 || b1 > t2 || l1 > r2 || f1 > B2 || B1 < f2) {
       return false;
     }
-    return collided.push(d);
+    return collided.push(l);
   })
   return collided
 
