@@ -1,8 +1,8 @@
 import { Group, SpotLight, PointLight, AmbientLight, HemisphereLight } from 'three';
 
 export default class BasicLights extends Group {
-  constructor(...args) {
-    super(...args);
+  constructor() {
+    super();
 
     const point = new PointLight(0xFFFFFF, 1, 10, 1);
     const dir = new SpotLight(0xFFFFFF, 0.8, 7, 0.8, 1, 1);

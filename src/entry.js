@@ -10,7 +10,7 @@ const mousePos = new Vector3()
 let mouseClick = false
 scene.add(seedScene);
 
-camera.position.set(0,3,-3);
+camera.position.set(0,3,+3);
 camera.lookAt(new Vector3(0,0,0));
 
 renderer.setPixelRatio(window.devicePixelRatio);
