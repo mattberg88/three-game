@@ -27,5 +27,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({'title': 'three-seed project'})
-  ]
+  ],
+  experiments: {
+    topLevelAwait: true,
+  }
 }

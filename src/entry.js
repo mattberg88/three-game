@@ -1,20 +1,24 @@
 import { WebGLRenderer, PerspectiveCamera, Scene, Vector3, Clock } from 'three'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 import SeedScene from './classes/Scene.js'
+import Camera from './classes/Camera.js';
+
 const scene = new Scene()
-const camera = new PerspectiveCamera()
 const renderer = new WebGLRenderer({antialias: true})
-const seedScene = new SeedScene()
+const camera = new Camera(renderer, true)
 let command = 0
 const vec = new Vector3()
 const mousePos = new Vector3()
 let mouseClick = false
+const seedScene = new SeedScene()
+
 scene.add(seedScene);
 
-camera.position.set(0,3,+3);
+camera.position.set(0,3,4);
 camera.lookAt(new Vector3(0,0,0));
 
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setClearColor(0xaee0ff, 1);
 
 const onAnimationFrameHandler = (timeStamp) => {
   renderer.render(scene, camera);
@@ -33,12 +37,12 @@ const windowResizeHanlder = () => {
 windowResizeHanlder();
 
 const keydownHandler = (event) => {
-  command = event.key
+  command = event.keyCode
 }
 
 const keyupHandler = (event) => {
-  if(command === event.key) {
-    command = ''
+  if(command === event.keyCode) {
+    command = 0
   }
 }
 
