@@ -2,6 +2,8 @@
 
 Three.js + nodeJS based game bundled with Webpack.
 
+Working demo > https://three-game.vercel.app/
+
 ## Install and Run
 To install packages run: `npm i`.
 To start server run: `npm start`.
