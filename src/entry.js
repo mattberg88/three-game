@@ -6,23 +6,23 @@ import Camera from './classes/Camera.js';
 
 const scene = new Scene()
 const renderer = new WebGLRenderer({antialias: true})
-const camera = new Camera(renderer, true)
-let command = 0
-const vec = new Vector3()
-const mousePos = new Vector3()
+const camera = new Camera(renderer, false)
 let mouseClick = false
 const seedScene = new SeedScene()
+const keys = {
+  left: false,
+  right: false,
+  up: false
+}
 
 scene.add(seedScene);
-
 camera.position.set(0,3,4);
 camera.lookAt(new Vector3(0,0,0));
-
 renderer.setPixelRatio(window.devicePixelRatio);
 
 const onAnimationFrameHandler = (timeStamp) => {
   renderer.render(scene, camera);
-  seedScene.update(command, {mousePos, mouseClick}, camera);
+  seedScene.update(keys);
   mouseClick = false
   window.requestAnimationFrame(onAnimationFrameHandler);
 }
@@ -37,38 +37,32 @@ const windowResizeHanlder = () => {
 windowResizeHanlder();
 
 const keydownHandler = (event) => {
-  command = event.keyCode
-}
-
-const keyupHandler = (event) => {
-  if(command === event.keyCode) {
-    command = 0
+  if(event.keyCode === 68) {
+    keys.right = true
+  }
+  if(event.keyCode === 65) {
+    keys.left = true
+  }
+  if(event.keyCode === 32) {
+    keys.up = true
   }
 }
 
-const mousemoveHandler = (event) => {
-  vec.set(
-    ( event.clientX / window.innerWidth ) * 2 - 1,
-    - ( event.clientY / window.innerHeight ) * 2 + 1,
-    0.5 );
-  vec.unproject( camera );
-  vec.sub( camera.position ).normalize();
-  const distance = - camera.position.z / vec.z;
-  mousePos.copy( camera.position ).add( vec.multiplyScalar( distance ) );
-}
-
-const mousedownHandler = (event) => {
-  mouseClick = true
+const keyupHandler = (event) => {
+  if(event.keyCode === 68) {
+    keys.right = false
+  }
+  if(event.keyCode === 65) {
+    keys.left = false
+  }
+  if(event.keyCode === 32) {
+    keys.up = false
+  }
 }
 
 window.addEventListener('resize', windowResizeHanlder);
 window.addEventListener('keydown', keydownHandler);
 window.addEventListener('keyup', keyupHandler);
-window.addEventListener('mousemove', mousemoveHandler);
-window.addEventListener('mousedown', mousedownHandler);
 
-
-
-// dom
 document.body.style.margin = 0;
 document.body.appendChild( renderer.domElement );
