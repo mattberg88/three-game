@@ -90,6 +90,8 @@ window.addEventListener('keyup', keyupHandler);
 // window.addEventListener('mousemove', mousemoveHandler);
 window.addEventListener('mousedown', mousedownHandler);
 window.addEventListener('mouseup', mouseupHandler);
+window.addEventListener('pointerdown', mousedownHandler);
+window.addEventListener('pointerup', mouseupHandler);
 
 
 
