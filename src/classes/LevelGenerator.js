@@ -1,6 +1,7 @@
 import { Group, Vector3 } from 'three';
 import { Body } from 'cannon-es'
 import BoxObject from './BoxObject.js';
+import StreetBlock from './StreetBlock.js';
 
 export default class LevelGenerator extends Group {
   constructor(world) {
