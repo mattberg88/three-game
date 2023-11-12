@@ -6,16 +6,16 @@ import Camera from './classes/Camera.js';
 
 const scene = new Scene()
 const renderer = new WebGLRenderer({antialias: true})
-const camera = new Camera(renderer, true)
-const vec = new Vector3()
-const mousePos = new Vector3()
-let mouseClick = false
+const camera = new Camera(renderer, false)
+const screenWidth = window.screen.width
 const seedScene = new SeedScene()
 const keys = {
   left: false,
   right: false,
   up: false,
-  click: false
+  pointerLeft: false,
+  pointerRight: false,
+  pointerClick: false
 }
 
 scene.add(seedScene);
@@ -28,7 +28,6 @@ renderer.setPixelRatio(window.devicePixelRatio);
 const onAnimationFrameHandler = (timeStamp) => {
   renderer.render(scene, camera);
   seedScene.update(keys);
-  mouseClick = false
   window.requestAnimationFrame(onAnimationFrameHandler);
 }
 window.requestAnimationFrame(onAnimationFrameHandler);
@@ -76,22 +75,41 @@ const keyupHandler = (event) => {
 //   mousePos.copy( camera.position ).add( vec.multiplyScalar( distance ) );
 // }
 
-const mousedownHandler = () => {
-  keys.click = true
+const pointerdownHandler = (event) => {
+
+
+
+  const pointerX = event.clientX
+  const screenLeft = screenWidth/3
+  const screenRight = screenWidth/3 * 2
+
+  if(pointerX < screenLeft){
+    keys.pointerLeft = true
+  }
+  if(pointerX > screenRight){
+    keys.pointerRight = true
+  }
+  if(pointerX > screenLeft && pointerX < screenRight) {
+    keys.pointerClick = true
+  }
 }
 
-const mouseupHandler = () => {
-  keys.click = false
+const pointerupHandler = (event) => {
+  keys.pointerLeft = false
+  keys.pointerRight = false
+  keys.pointerClick = false
+  keys.pointer = false
 }
+
 
 window.addEventListener('resize', windowResizeHanlder);
 window.addEventListener('keydown', keydownHandler);
 window.addEventListener('keyup', keyupHandler);
 // window.addEventListener('mousemove', mousemoveHandler);
-window.addEventListener('mousedown', mousedownHandler);
-window.addEventListener('mouseup', mouseupHandler);
-window.addEventListener('pointerdown', mousedownHandler);
-window.addEventListener('pointerup', mouseupHandler);
+// window.addEventListener('mousedown', pointerdownHandler);
+// window.addEventListener('mouseup', pointerupHandler);
+window.addEventListener('pointerdown', pointerdownHandler);
+window.addEventListener('pointerup', pointerupHandler);
 
 
 

@@ -53,21 +53,20 @@ export default class Cat extends Group {
 
   movePlayer(keys) {
     if(!this.body) return
-    if(keys.right) {
+    if(keys.right || keys.pointerRight) {
       this.action.timeScale = 5
       this.setPosition(new Vec3(this.mesh.position.x + 0.04, this.mesh.position.y, this.position.z))
     }
-    if(keys.left) {
+    if(keys.left || keys.pointerLeft) {
       this.action.timeScale = 0.8
       this.setPosition(new Vec3(this.mesh.position.x - 0.04, this.mesh.position.y, this.position.z))
     }
-    if((keys.up || keys.click) && !this.jumping) {
+    if((keys.up || keys.pointerClick) && !this.jumping) {
       this.action.timeScale = 0
-
       this.body.applyImpulse(new Vec3(0,5,0))
       this.jumping = true
     }
-    if(!keys.up && !keys.click && !keys.left && !keys.right) {
+    if(!keys.up && !keys.left && !keys.right && !keys.pointerClick && !keys.pointerLeft && !keys.pointerRight) {
       this.action.timeScale = 2
     }
   }
