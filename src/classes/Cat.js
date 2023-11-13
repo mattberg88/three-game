@@ -1,8 +1,7 @@
 import { Group, AnimationMixer, AnimationClip, Clock, MeshPhongMaterial, AudioListener, AudioLoader, Audio } from 'three';
 import {Sphere, Material, Body, Vec3} from 'cannon-es'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import CAT from '../assets/CatAnim.glb'
-import MEOW from '../assets/meow1.ogg'
+import CAT from '../assets/Cat.glb'
 
 export default class Cat extends Group {
   constructor(world, camera, startPos, mass) {

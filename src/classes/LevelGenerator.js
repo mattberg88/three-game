@@ -1,58 +1,57 @@
 import { Group, Vector3 } from 'three';
-import { Body } from 'cannon-es'
-import BoxObject from './BoxObject.js';
+import { Body, Quaternion } from 'cannon-es'
 import LevelObject from './LevelObject.js';
-import STREET from '../assets/streetBlock7.obj'
-import STREETTEX from '../assets/streetnorms3.jpeg'
-
+import BoxShape from './BoxShape.js';
+import STREET from '../assets/StreetBlock.glb'
+import STREETTEX from '../assets/BrickNorms.jpeg'
 import {generateString} from '../utils/level.js'
 
 export default class LevelGenerator extends Group {
   constructor(world) {
     super();
-    let levelString = generateString(1000, '--------')
+    let levelString = generateString(100, '--------')
     levelString += 'F'
     this.levelCode = levelString.split('')
     this.levelArray = []
     this.characterIndex = 0
     this.world = world
     this.body = new Body({ mass: 0})
-    this.speed = 0.05
+    this.speed = 0.03
     this.world.addBody(this.body)
   }
 
   async loadLevel() {
-    const loaderArray = []
-    this.levelCode.map((code , index)=> {
+    this.levelCode.map(async (code , index)=> {
       const levelObjects = this.getObjects(code, index)
       if(!levelObjects) return
-      levelObjects.map(obj => {
-        loaderArray.push(obj.loadObject)
-      })
-    })
-    await Promise.all(loaderArray).then((loadedModels) => {
-      loadedModels.forEach(obj => {
-        this.body.addShape(obj.shape, obj.mesh.position, obj.mesh.quaternion)
-        this.add(obj.mesh)
-        this.levelArray.push(obj.mesh)
+      await Promise.all(levelObjects.meshes.map((mesh) => mesh.loadObject)).then((models => {
+        models.forEach(model => {
+          this.add(model)
+          this.levelArray.push(model)
+        })
+      }))
+      levelObjects.shapes.map((shape) => {
+        this.body.addShape(shape.shape, shape.pos, new Quaternion().setFromEuler(shape.rot.x, shape.rot.y, shape.rot.z, 'XYZ'))
       })
     })
   }
 
+  getStreetBlock = (index, height, angle) => {
+    return {
+      meshes: [new LevelObject(STREET, STREETTEX, new Vector3(index,height,0), new Vector3(Math.PI/2, angle, Math.PI/2))],
+      shapes: [new BoxShape(new Vector3(0.5,0.5,0.2), new Vector3(index,height + 0.3,0), new Vector3(Math.PI/2, angle, Math.PI/2))]
+    }
+  }
+
   getObjects(code, index) {
     switch(code) {
-      case '-': return [new LevelObject(STREET, STREETTEX, new Vector3(index,0,0), new Vector3(0, Math.PI + Math.PI/2, 0))]
-      case '=': return [
-        new LevelObject(STREET, STREETTEX, new Vector3(index,0,0), new Vector3(0, Math.PI + Math.PI/2, 0)),
-        new LevelObject(STREET, STREETTEX, new Vector3(index,2,0), new Vector3(0, Math.PI + Math.PI/2, 0))
-      ]
-      case '|': return [new LevelObject(STREET, STREETTEX, new Vector3(index,0.3,0), new Vector3(0, Math.PI + Math.PI/2, 0))]
-      case '_': return [new LevelObject(STREET, STREETTEX, new Vector3(index,-0.3,0), new Vector3(0, Math.PI + Math.PI/2, 0))]
-      case 'F': return [new LevelObject(STREET, STREETTEX, new Vector3(index,1,0), new Vector3( Math.PI/2, Math.PI/2, Math.PI/2))]
+      case '-': return this.getStreetBlock(index, 0, 0)
+      case '|': return this.getStreetBlock(index, 0.4, 0)
+      case '_': return this.getStreetBlock(index, -0.4, 0)
+      case 'F': return this.getStreetBlock(index, 1, 0)
 
-      case '<': return [new LevelObject(STREET, STREETTEX, new Vector3(index,0.3,0), new Vector3( 0,  0, Math.PI/5))]
-      case '>': return [new LevelObject(STREET, STREETTEX, new Vector3(index,0.3,0), new Vector3( 0,  Math.PI, Math.PI/5))]
-
+      // case '<': return this.getStreetBlock(index, 0, Math.PI/4)
+      // case '>': return this.getStreetBlock(index, 0, - Math.PI/4)
     }
   }
 
@@ -63,7 +62,6 @@ export default class LevelGenerator extends Group {
       }
     })
     this.world.removeBody(this.body)
-
   }
 
   update() {
