@@ -1,14 +1,12 @@
-import { WebGLRenderer, PerspectiveCamera, Scene, Vector3, Clock } from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+import { WebGLRenderer, PerspectiveCamera, Scene, Vector3, AudioListener } from 'three'
 import SeedScene from './classes/Scene.js'
 import Camera from './classes/Camera.js';
 
 const scene = new Scene()
-const renderer = new WebGLRenderer({antialias: true})
+const renderer = new WebGLRenderer({antialias: false})
 const camera = new Camera(renderer, false)
-const screenWidth = window.screen.width
-const seedScene = new SeedScene()
+const seedScene = new SeedScene(camera)
+
 const keys = {
   left: false,
   right: false,
@@ -27,7 +25,7 @@ renderer.setPixelRatio(window.devicePixelRatio);
 
 const onAnimationFrameHandler = (timeStamp) => {
   renderer.render(scene, camera);
-  seedScene.update(keys);
+  seedScene.update(keys, camera);
   window.requestAnimationFrame(onAnimationFrameHandler);
 }
 window.requestAnimationFrame(onAnimationFrameHandler);
@@ -76,22 +74,23 @@ const keyupHandler = (event) => {
 // }
 
 const pointerdownHandler = (event) => {
+  keys.pointerClick = true
 
 
 
-  const pointerX = event.clientX
-  const screenLeft = screenWidth/3
-  const screenRight = screenWidth/3 * 2
+  // const pointerX = event.clientX
+  // const screenLeft = window.innerWidth/3
+  // const screenRight = window.innerWidth/3 * 2
 
-  if(pointerX < screenLeft){
-    keys.pointerLeft = true
-  }
-  if(pointerX > screenRight){
-    keys.pointerRight = true
-  }
-  if(pointerX > screenLeft && pointerX < screenRight) {
-    keys.pointerClick = true
-  }
+  // if(pointerX < screenLeft){
+  //   keys.pointerLeft = true
+  // }
+  // if(pointerX > screenRight){
+  //   keys.pointerRight = true
+  // }
+  // if(pointerX > screenLeft && pointerX < screenRight) {
+  //   keys.pointerClick = true
+  // }
 }
 
 const pointerupHandler = (event) => {
@@ -116,3 +115,4 @@ window.addEventListener('pointerup', pointerupHandler);
 // dom
 document.body.style.margin = 0;
 document.body.appendChild( renderer.domElement );
+

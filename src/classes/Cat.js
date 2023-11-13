@@ -1,10 +1,11 @@
-import { Group, AnimationMixer, AnimationClip, Clock, MeshPhongMaterial } from 'three';
+import { Group, AnimationMixer, AnimationClip, Clock, MeshPhongMaterial, AudioListener, AudioLoader, Audio } from 'three';
 import {Sphere, Material, Body, Vec3} from 'cannon-es'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import CAT from '../assets/CatAnim.glb'
+import MEOW from '../assets/meow1.ogg'
 
 export default class Cat extends Group {
-  constructor(world, startPos, mass) {
+  constructor(world, camera, startPos, mass) {
     const loader = new GLTFLoader()
     // this.clock = new Clock()
     super();
@@ -30,7 +31,7 @@ export default class Cat extends Group {
         this.body.addShape(shape, new Vec3(0.1, 0.15, 0))
         this.body.addShape(shape, new Vec3(-0.15, 0.15, 0))
 
-        this.body.angularFactor = new Vec3(1, 0, 0)
+        this.body.angularFactor = new Vec3(0, 0, 0)
 
         this.add(this.mesh);
         this.world = world
@@ -53,21 +54,21 @@ export default class Cat extends Group {
 
   movePlayer(keys) {
     if(!this.body) return
-    if(keys.right || keys.pointerRight) {
-      this.action.timeScale = 5
-      this.setPosition(new Vec3(this.mesh.position.x + 0.04, this.mesh.position.y, this.position.z))
-    }
-    if(keys.left || keys.pointerLeft) {
-      this.action.timeScale = 0.8
-      this.setPosition(new Vec3(this.mesh.position.x - 0.04, this.mesh.position.y, this.position.z))
-    }
+    // if(keys.right || keys.pointerRight) {
+    //   this.action.timeScale = 5
+    //   this.setPosition(new Vec3(this.mesh.position.x + 0.04, this.mesh.position.y, this.position.z))
+    // }
+    // if(keys.left || keys.pointerLeft) {
+    //   this.action.timeScale = 0.8
+    //   this.setPosition(new Vec3(this.mesh.position.x - 0.04, this.mesh.position.y, this.position.z))
+    // }
     if((keys.up || keys.pointerClick) && !this.jumping) {
-      this.action.timeScale = 0
-      this.body.applyImpulse(new Vec3(0,5,0))
+      this.action.timeScale = 3
+      this.body.applyImpulse(new Vec3(0,3,0))
       this.jumping = true
     }
     if(!keys.up && !keys.left && !keys.right && !keys.pointerClick && !keys.pointerLeft && !keys.pointerRight) {
-      this.action.timeScale = 2
+      this.action.timeScale = 7
     }
   }
 
