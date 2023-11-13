@@ -63,12 +63,16 @@ export default class Cat extends Group {
     //   this.setPosition(new Vec3(this.mesh.position.x - 0.04, this.mesh.position.y, this.position.z))
     // }
     if((keys.up || keys.pointerClick) && !this.jumping) {
-      this.action.timeScale = 3
-      this.body.applyImpulse(new Vec3(0,3,0))
-      this.jumping = true
+      this.action.timeScale = this.body.position.y * 10
+      if(this.body.velocity.y < 4 &&  !this.jumping) {
+        this.body.applyImpulse(new Vec3(0,0.6,0))
+      } else {
+        this.jumping = true
+
+      }
     }
     if(!keys.up && !keys.left && !keys.right && !keys.pointerClick && !keys.pointerLeft && !keys.pointerRight) {
-      this.action.timeScale = 7
+      this.action.timeScale = 6
     }
   }
 
@@ -78,6 +82,14 @@ export default class Cat extends Group {
   }
 
   update() {
+    if(this.body.position.x < -1) {
+      this.body.applyImpulse(new Vec3(0.06, 0, 0))
+      this.action.timeScale += 0.1
+    }
+    if(this.body.position.x > 1) {
+      this.body.applyImpulse(new Vec3(-0.06, 0, 0))
+      this.action.timeScale -= 0.1
+    }
     if(!this.body) return
     this.mixer.update(this.clock.getDelta());
     this.mesh.position.copy(this.body.position)

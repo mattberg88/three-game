@@ -10,7 +10,8 @@ import {generateString} from '../utils/level.js'
 export default class LevelGenerator extends Group {
   constructor(world) {
     super();
-    const levelString = generateString(100, '--------')
+    let levelString = generateString(1000, '--------')
+    levelString += 'F'
     this.levelCode = levelString.split('')
     this.levelArray = []
     this.characterIndex = 0
@@ -47,8 +48,10 @@ export default class LevelGenerator extends Group {
       ]
       case '|': return [new LevelObject(STREET, STREETTEX, new Vector3(index,0.3,0), new Vector3(0, Math.PI + Math.PI/2, 0))]
       case '_': return [new LevelObject(STREET, STREETTEX, new Vector3(index,-0.3,0), new Vector3(0, Math.PI + Math.PI/2, 0))]
-      // case '<': return [new LevelObject(STREET, STREETTEX, new Vector3(index,0.3,0), new Vector3( 0,  0, Math.PI/5))]
-      // case '>': return [new LevelObject(STREET, STREETTEX, new Vector3(index,0.3,0), new Vector3( 0,  Math.PI, Math.PI/5))]
+      case 'F': return [new LevelObject(STREET, STREETTEX, new Vector3(index,1,0), new Vector3( Math.PI/2, Math.PI/2, Math.PI/2))]
+
+      case '<': return [new LevelObject(STREET, STREETTEX, new Vector3(index,0.3,0), new Vector3( 0,  0, Math.PI/5))]
+      case '>': return [new LevelObject(STREET, STREETTEX, new Vector3(index,0.3,0), new Vector3( 0,  Math.PI, Math.PI/5))]
 
     }
   }

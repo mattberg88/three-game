@@ -24,7 +24,13 @@ const isCompatible = (prev, next) => {
     return true
   }
   if (prev === '<') {
-    if (next === '<') {
+    if (next === '<' || next === '>') {
+      return false
+    }
+    return true
+  }
+  if (prev === '>') {
+    if (next === '<' || next === '>') {
       return false
     }
     return true
@@ -52,6 +58,9 @@ const getNextChar = (lastChar) => {
       case 2: return '  '
       case 3: return '|'
       case 4: return '_'
+      case 5: return '>'
+      case 6: return '<'
+
       default: return '-'
     }
   }
