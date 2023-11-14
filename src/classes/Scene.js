@@ -37,7 +37,7 @@ export default class SeedScene extends Group {
     }
     this.player.movePlayer(keys)
     this.level.update()
-    this.cannonDebugger.update()
+    // this.cannonDebugger.update()
     this.world.fixedStep()
     if(this.player.mesh) {
       this.player.update()
