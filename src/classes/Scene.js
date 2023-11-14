@@ -14,7 +14,7 @@ export default class SeedScene extends Group {
     const lights = new BasicLights();
     this.level = new LevelGenerator(this.world)
     this.level.loadLevel()
-    this.player = new Cat(this.world, this.camera, new Vector3(0,1,0), 1)
+    this.player = new Cat(this.world, this.camera, new Vector3(0,3,0), 1)
     this.updateList = [this.level]
     this.add(this.level, lights, this.player);
     this.speedFactor = 0
@@ -23,7 +23,7 @@ export default class SeedScene extends Group {
   resetGame() {
     this.player.removePlayer()
     this.level.removeAll()
-    this.player = new Cat(this.world, this.camera, new Vector3(0,1,0), 1)
+    this.player = new Cat(this.world, this.camera, new Vector3(0,3,0), 1)
     this.level = new LevelGenerator(this.world)
     this.level.loadLevel()
 

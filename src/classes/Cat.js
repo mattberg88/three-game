@@ -63,7 +63,7 @@ export default class Cat extends Group {
     // }
     if((keys.up || keys.pointerClick) && !this.jumping) {
       this.action.timeScale = this.body.position.y * 10
-      if(this.body.velocity.y < 4 &&  !this.jumping) {
+      if(this.body.velocity.y < 3 &&  !this.jumping) {
         this.body.applyImpulse(new Vec3(0,0.6,0))
       } else {
         this.jumping = true
@@ -82,11 +82,11 @@ export default class Cat extends Group {
 
   update() {
     if(this.body.position.x < -1) {
-      this.body.applyImpulse(new Vec3(0.06, 0, 0))
+      this.body.applyImpulse(new Vec3(0.06, 0, 0), this.body.position)
       this.action.timeScale += 0.1
     }
     if(this.body.position.x > 1) {
-      this.body.applyImpulse(new Vec3(-0.06, 0, 0))
+      this.body.applyImpulse(new Vec3(0.06, 0, 0), this.body.position)
       this.action.timeScale -= 0.1
     }
     if(!this.body) return

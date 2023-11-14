@@ -1,57 +1,63 @@
-import { Group, Vector3 } from 'three';
-import { Body, Quaternion } from 'cannon-es'
+import { Group, Vector3, TextureLoader, Euler, MeshPhongMaterial } from 'three';
+import { Body, Box, Quaternion, Vec3} from 'cannon-es'
 import LevelObject from './LevelObject.js';
 import BoxShape from './BoxShape.js';
-import STREET from '../assets/StreetBlock.glb'
+import STREET from '../assets/street.glb'
 import STREETTEX from '../assets/BrickNorms.jpeg'
 import {generateString} from '../utils/level.js'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export default class LevelGenerator extends Group {
   constructor(world) {
     super();
-    let levelString = generateString(100, '--------')
+    const streetObj = new LevelObject('street', STREET, STREETTEX, new Vector3(0.5, 0.5, 0.5))
+    this.levelLoaders = [streetObj.load]
+    let levelString = generateString(1000, '--------')
     levelString += 'F'
     this.levelCode = levelString.split('')
+    this.levelConfigs = this.levelCode.map((code , index)=> this.getObjects(code, index))
     this.levelArray = []
     this.characterIndex = 0
     this.world = world
     this.body = new Body({ mass: 0})
-    this.speed = 0.03
+    this.speed = 0.05
     this.world.addBody(this.body)
   }
 
-  async loadLevel() {
-    this.levelCode.map(async (code , index)=> {
-      const levelObjects = this.getObjects(code, index)
-      if(!levelObjects) return
-      await Promise.all(levelObjects.meshes.map((mesh) => mesh.loadObject)).then((models => {
-        models.forEach(model => {
-          this.add(model)
-          this.levelArray.push(model)
-        })
-      }))
-      levelObjects.shapes.map((shape) => {
-        this.body.addShape(shape.shape, shape.pos, new Quaternion().setFromEuler(shape.rot.x, shape.rot.y, shape.rot.z, 'XYZ'))
+  loadLevel() {
+    Promise.all(this.levelLoaders).then(loaded => {
+      this.levelConfigs.forEach(conf => {
+        if(!conf) return
+        const match = loaded.find(ob => ob.name = conf.name)
+        const meshClone = match.mesh.clone()
+        meshClone.position.copy(conf.position)
+        meshClone.quaternion.copy(new Quaternion().setFromEuler(conf.rotation.x, conf.rotation.y, conf.rotation.z, 'XYZ'))
+        this.body.addShape(conf.shape, conf.shapePosition)
+        this.add(meshClone)
+        this.levelArray.push(meshClone)
       })
     })
   }
 
-  getStreetBlock = (index, height, angle) => {
+  getStreetConf(index, height, rotation) {
     return {
-      meshes: [new LevelObject(STREET, STREETTEX, new Vector3(index,height,0), new Vector3(Math.PI/2, angle, Math.PI/2))],
-      shapes: [new BoxShape(new Vector3(0.5,0.5,0.2), new Vector3(index,height + 0.3,0), new Vector3(Math.PI/2, angle, Math.PI/2))]
+      name: 'street',
+      scale: new Vector3(0.5,0.5,0.5),
+      position: new Vector3(index,height,0),
+      rotation: new Vector3(Math.PI/2,rotation,Math.PI/2),
+      shape: new Box(new Vector3(0.5,0.2,0.5)),
+      shapePosition: new Vector3(index,height + 0.3,0),
+      shapeRotation: new Vector3(Math.PI/2,rotation,Math.PI/2),
     }
   }
-
   getObjects(code, index) {
     switch(code) {
-      case '-': return this.getStreetBlock(index, 0, 0)
-      case '|': return this.getStreetBlock(index, 0.4, 0)
-      case '_': return this.getStreetBlock(index, -0.4, 0)
-      case 'F': return this.getStreetBlock(index, 1, 0)
-
-      // case '<': return this.getStreetBlock(index, 0, Math.PI/4)
-      // case '>': return this.getStreetBlock(index, 0, - Math.PI/4)
+      case '-': return this.getStreetConf(index, 0, 0)
+      case '|': return this.getStreetConf(index, 0.4, 0)
+      case '_': return this.getStreetConf(index, -0.4, 0)
+      case 'F': return this.getStreetConf(index, 1, 0)
+      // case '<': return this.getStreetBlock(index, 0)
+      // case '>': return this.getStreetBlock(index, 0)
     }
   }
 
