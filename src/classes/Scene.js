@@ -37,12 +37,11 @@ export default class SeedScene extends Group {
     if(this.player.mesh && (this.player.mesh.position.y < -10 || this.player.mesh.position.x < -10)) {
       this.resetGame()
     }
-    this.player.movePlayer(keys, deltaTime)
     this.level.update(deltaTime)
     // this.cannonDebugger.update()
     this.world.fixedStep(deltaTime)
     if(this.player.mesh) {
-      this.player.update(deltaTime, this)
+      this.player.update(keys, deltaTime, this)
     }
   }
 }

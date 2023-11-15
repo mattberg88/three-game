@@ -9,12 +9,15 @@ export default class Cat extends Group {
     super();
     this.paused = false
     this.grounded = false
+    this.obstructed = false
+    this.material = new MeshPhongMaterial({color: 0x444444})
+    this.greenMaterial = new MeshPhongMaterial({color: 0x446644})
+    this.redMaterial = new MeshPhongMaterial({color: 0x664444})
+
     loader.load(CAT, (gltf) => {
         this.mesh = gltf.scene
-        var newMaterial = new MeshPhongMaterial({color: 0x444444});
-        this.mesh.traverse((o) => {
-          if (o.isMesh) o.material = newMaterial;
-        });
+
+        this.setMaterial(this.material);
         this.mesh.scale.set(0.01,0.01,0.01)
 
         this.mixer = new AnimationMixer( gltf.scene )
@@ -27,12 +30,12 @@ export default class Cat extends Group {
         ballMaterial.friction = 1
         this.body = new Body({ mass, material: ballMaterial, position: startPos})
         const shape = new Sphere(0.15)
-        this.body.quaternion.copy(this.mesh.quaternion)
         this.body.addShape(shape, new Vec3(0.1, 0.15, 0))
         this.body.addShape(shape, new Vec3(-0.15, 0.15, 0))
         this.body.angularFactor = new Vec3(0, 0, 0)
 
-        this.rayCaster = new Raycaster(this.mesh.position, new Vec3(0, -1, 0), 0, 0.25)
+        this.downRay = new Raycaster(this.mesh.position, new Vec3(0, -1, 0), 0, 0.25)
+        this.frontRay = new Raycaster(this.mesh.position, new Vec3(0, 0, 1), 0, 0.25)
 
         this.add(this.mesh);
         this.world = world
@@ -41,13 +44,17 @@ export default class Cat extends Group {
       },
     );
   }
-
+  setMaterial(material) {
+    this.mesh.traverse((o) => {
+      if (o.isMesh) o.material = material;
+    });
+  }
   setPosition(pos) {
     this.body.position.set(pos.x, pos.y, pos.z)
     this.mesh.position.set(pos.x, pos.y, pos.z)
   }
 
-  movePlayer(keys, deltaTime) {
+  controlPlayer(keys, deltaTime) {
     if(!this.body) return
     // if(keys.right || keys.pointerRight) {
     //   this.action.timeScale = 7
@@ -57,12 +64,11 @@ export default class Cat extends Group {
     //   this.action.timeScale = 2
     //   this.setPosition(new Vec3(this.mesh.position.x - 1 * deltaTime, this.mesh.position.y, this.position.z))
     // }
-    if((keys.up || keys.pointerClick) && this.grounded) {
-      this.action.timeScale = this.body.position.y * 10 * deltaTime
-        this.body.applyImpulse(new Vec3(0,1,0))
+    if((keys.up || keys.pointerClick) && this.grounded && !this.obsructed) {
+      this.body.applyImpulse(new Vec3(0,0.6,0))
     }
     if(!keys.up && !keys.left && !keys.right && !keys.pointerClick && !keys.pointerLeft && !keys.pointerRight) {
-      this.action.timeScale = 6
+      this.action.timeScale = 600 * deltaTime
     }
   }
 
@@ -71,7 +77,7 @@ export default class Cat extends Group {
     this.world.removeBody(this.body)
   }
 
-  update(deltaTime, scene) {
+  update(keys, deltaTime, scene) {
     // if(this.body.position.x < -1) {
     //   this.body.applyImpulse(new Vec3(0.06, 0, 0), this.body.position)
     //   this.action.timeScale += 0.1
@@ -82,9 +88,21 @@ export default class Cat extends Group {
     // }
 
     if(!this.body) return
-    this.rayCaster.set(new Vec3(this.mesh.position.x,this.mesh.position.y + 0.1,this.mesh.position.z), new Vec3(0, -1, 0))
-    this.grounded = this.rayCaster.intersectObjects(scene.level.children, true).length > 0
+    this.controlPlayer(keys, deltaTime)
+    this.downRay.set(new Vec3(this.mesh.position.x,this.mesh.position.y + 0.1,this.mesh.position.z), new Vec3(0, -1, 0))
+    this.frontRay.set(this.mesh.position, new Vec3(1, 0, 0))
+    this.grounded = this.downRay.intersectObjects(scene.level.children, true).length > 0
+    this.obsructed = this.frontRay.intersectObjects(scene.level.children, true).length > 0
 
+    if(this.body.position.y > 5) this.body.velocity.set(0,-9,0)
+    if(this.obsructed) {
+      this.setMaterial(this.redMaterial)
+    }else if(this.grounded) {
+      this.setMaterial(this.greenMaterial)
+    }else {
+      this.action.timeScale = 50 * deltaTime
+      this.setMaterial(this.material)
+    }
     this.mixer.update(deltaTime);
     this.mesh.position.copy(this.body.position)
     this.mesh.quaternion.copy(this.body.quaternion)
