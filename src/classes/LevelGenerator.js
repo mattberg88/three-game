@@ -1,18 +1,16 @@
 import { Group, Vector3, TextureLoader, Euler, MeshPhongMaterial } from 'three';
 import { Body, Box, Quaternion, Vec3} from 'cannon-es'
 import LevelObject from './LevelObject.js';
-import BoxShape from './BoxShape.js';
 import STREET from '../assets/street.glb'
 import STREETTEX from '../assets/BrickNorms.jpeg'
 import {generateString} from '../utils/level.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 export default class LevelGenerator extends Group {
   constructor(world) {
     super();
     const streetObj = new LevelObject('street', STREET, STREETTEX, new Vector3(0.5, 0.5, 0.5))
     this.levelLoaders = [streetObj.load]
-    let levelString = generateString(1000, '--------')
+    let levelString = generateString(100, '-------|')
     levelString += 'F'
     this.levelCode = levelString.split('')
     this.levelConfigs = this.levelCode.map((code , index)=> this.getObjects(code, index))
@@ -22,6 +20,7 @@ export default class LevelGenerator extends Group {
     this.body = new Body({ mass: 0})
     this.speed = 0.05
     this.world.addBody(this.body)
+    this.paused = false
   }
 
   loadLevel() {
@@ -70,8 +69,10 @@ export default class LevelGenerator extends Group {
     this.world.removeBody(this.body)
   }
 
-  update() {
-    this.position.setX(this.position.x - this.speed)
+
+  update(deltaTime) {
+    if(this.paused) return
+    this.position.setX(this.position.x - this.speed * deltaTime * 100)
     this.speed += 0.00001
     this.body.position.copy(this.position)
   }

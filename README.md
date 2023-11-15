@@ -13,9 +13,8 @@ Once you are happy with your project you'll be sure to want to show it off. Runn
 
 ## TODO List
 #### Coding:
-- enable deltaTime to have consistent speed across platforms
 - make "grounded" boolean for when ground is under cat
-- enable pausing game
+- make button that you can click
 - make a score display
 - make high score functionality
 - change cat angle when on a slope

@@ -1,4 +1,4 @@
-import { WebGLRenderer, PerspectiveCamera, Scene, Vector3, AudioListener } from 'three'
+import { WebGLRenderer, Scene, Vector3, Clock } from 'three'
 import SeedScene from './classes/Scene.js'
 import Camera from './classes/Camera.js';
 
@@ -6,11 +6,12 @@ const scene = new Scene()
 const renderer = new WebGLRenderer({antialias: false})
 const camera = new Camera(renderer, false)
 const seedScene = new SeedScene(camera)
-
+const clock = new Clock()
 const keys = {
   left: false,
   right: false,
   up: false,
+  pause: false,
   pointerLeft: false,
   pointerRight: false,
   pointerClick: false
@@ -24,8 +25,9 @@ camera.lookAt(new Vector3(0,0,0));
 renderer.setPixelRatio(window.devicePixelRatio);
 
 const onAnimationFrameHandler = (timeStamp) => {
+  const deltaTime = clock.getDelta()
   renderer.render(scene, camera);
-  seedScene.update(keys, camera);
+  seedScene.update(keys, deltaTime);
   window.requestAnimationFrame(onAnimationFrameHandler);
 }
 window.requestAnimationFrame(onAnimationFrameHandler);
@@ -51,6 +53,9 @@ const keydownHandler = (event) => {
 }
 
 const keyupHandler = (event) => {
+  if(event.keyCode === 80) {
+    keys.pause = !keys.pause
+  }
   if(event.keyCode === 68) {
     keys.right = false
   }

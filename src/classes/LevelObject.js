@@ -1,7 +1,5 @@
-import { Group, TextureLoader, Mesh, Vector2, MeshPhongMaterial } from 'three';
-import {Box, Vec3, Body, Quaternion} from 'cannon-es'
+import { Group, TextureLoader, MeshPhongMaterial } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
 export default class LevelObject extends Group {
   constructor(name, obj, tex, scale) {
