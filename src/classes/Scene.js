@@ -1,4 +1,4 @@
-import { Group, Vector3, Raycaster, AudioListener, AudioLoader } from 'three';
+import { Group, Vector3, LineBasicMaterial, BufferGeometry, Line } from 'three';
 import {World, Vec3} from 'cannon-es'
 import BasicLights from './Lights.js';
 import LevelGenerator from './LevelGenerator.js';
@@ -18,6 +18,18 @@ export default class SeedScene extends Group {
     this.updateList = [this.level]
     this.add(this.level, lights, this.player);
     this.speedFactor = 0
+    this.makeDebugLine()
+  }
+
+  makeDebugLine() {
+    const lineMat = new LineBasicMaterial({ color: 0xff0000 })
+    const points = new Array()
+    points.push( new Vector3( 0, 0, 1 ) )
+    points.push( new Vector3( 0, 0, 0 ) )
+    const geometry = new BufferGeometry().setFromPoints( points )
+    // geometry.rotateX(Math.PI/2)
+    this.debugLine = new Line( geometry, lineMat )
+    this.add( this.debugLine )
   }
 
   resetGame() {
@@ -38,7 +50,7 @@ export default class SeedScene extends Group {
       this.resetGame()
     }
     this.level.update(deltaTime)
-    // this.cannonDebugger.update()
+    this.cannonDebugger.update()
     this.world.fixedStep(deltaTime)
     if(this.player.mesh) {
       this.player.update(keys, deltaTime, this)

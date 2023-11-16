@@ -1,5 +1,5 @@
-import { Group, Mesh, AnimationMixer, AnimationClip, MeshPhongMaterial, Raycaster } from 'three';
-import {Sphere, Material, Body, Vec3} from 'cannon-es'
+import { Group, AnimationMixer, AnimationClip, MeshPhongMaterial, Raycaster, Vector3, Quaternion } from 'three';
+import {Sphere, Material, Body, Vec3, Box} from 'cannon-es'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import CAT from '../assets/Cat.glb'
 
@@ -18,7 +18,7 @@ export default class Cat extends Group {
         this.mesh = gltf.scene
 
         this.setMaterial(this.material);
-        this.mesh.scale.set(0.01,0.01,0.01)
+        this.mesh.scale.set(0.005,0.005,0.005)
 
         this.mixer = new AnimationMixer( gltf.scene )
         const clips = gltf.animations
@@ -29,14 +29,12 @@ export default class Cat extends Group {
         const ballMaterial = new Material('ground')
         ballMaterial.friction = 1
         this.body = new Body({ mass, material: ballMaterial, position: startPos})
-        const shape = new Sphere(0.15)
-        this.body.addShape(shape, new Vec3(0.1, 0.15, 0))
-        this.body.addShape(shape, new Vec3(-0.15, 0.15, 0))
+        const shape = new Box(new Vec3(0.1, 0.1, 0.1))
+        this.body.addShape(shape, new Vec3(0, 0.07, 0))
         this.body.angularFactor = new Vec3(0, 0, 0)
 
         this.downRay = new Raycaster(this.mesh.position, new Vec3(0, -1, 0), 0, 0.25)
         this.frontRay = new Raycaster(this.mesh.position, new Vec3(0, 0, 1), 0, 0.25)
-
         this.add(this.mesh);
         this.world = world
         this.world.addBody(this.body)
@@ -64,8 +62,8 @@ export default class Cat extends Group {
     //   this.action.timeScale = 2
     //   this.setPosition(new Vec3(this.mesh.position.x - 1 * deltaTime, this.mesh.position.y, this.position.z))
     // }
-    if((keys.up || keys.pointerClick) && this.grounded && !this.obsructed) {
-      this.body.applyImpulse(new Vec3(0,0.6,0))
+    if((keys.up || keys.pointerClick) && this.grounded) {
+      this.body.applyImpulse(new Vec3(0,0.2,0))
     }
     if(!keys.up && !keys.left && !keys.right && !keys.pointerClick && !keys.pointerLeft && !keys.pointerRight) {
       this.action.timeScale = 600 * deltaTime
@@ -78,12 +76,15 @@ export default class Cat extends Group {
   }
 
   update(keys, deltaTime, scene) {
-    // if(this.body.position.x < -1) {
-    //   this.body.applyImpulse(new Vec3(0.06, 0, 0), this.body.position)
+    // if(this.body.position.x < -0.1 && this.grounded) {
+    //   this.mesh.translateX(0.01)
+    //   this.body.position.copy(this.mesh.position)
     //   this.action.timeScale += 0.1
     // }
-    // if(this.body.position.x > 1) {
-    //   this.body.applyImpulse(new Vec3(0.06, 0, 0), this.body.position)
+    // if(this.body.position.x > 0.1) {
+    //   this.mesh.translateX(-0.01)
+    //   this.body.position.copy(this.mesh.position)
+
     //   this.action.timeScale -= 0.1
     // }
 
@@ -92,10 +93,9 @@ export default class Cat extends Group {
     this.downRay.set(new Vec3(this.mesh.position.x,this.mesh.position.y + 0.1,this.mesh.position.z), new Vec3(0, -1, 0))
     this.frontRay.set(this.mesh.position, new Vec3(1, 0, 0))
     this.grounded = this.downRay.intersectObjects(scene.level.children, true).length > 0
-    this.obsructed = this.frontRay.intersectObjects(scene.level.children, true).length > 0
-
+    this.obstructed = this.frontRay.intersectObjects(scene.level.children, true).length > 0
     if(this.body.position.y > 5) this.body.velocity.set(0,-9,0)
-    if(this.obsructed) {
+    if(this.obstructed) {
       this.setMaterial(this.redMaterial)
     }else if(this.grounded) {
       this.setMaterial(this.greenMaterial)
@@ -104,7 +104,27 @@ export default class Cat extends Group {
       this.setMaterial(this.material)
     }
     this.mixer.update(deltaTime);
+
+    // if(scene.debugLine) {
+    //   const bodyPos = scene.player.body.position
+    //   scene.debugLine.position.set(bodyPos.x, bodyPos.y, bodyPos.z)
+    //   const centerAngle = this.mesh.position.angleTo(new Vector3(0,-4,0))
+    //   console.log(scene.debugLine)
+
+
+    // }
+    scene.debugLine.position.set(this.body.position.x, this.body.position.y, this.body.position.z)
+
+    scene.debugLine.lookAt(new Vector3(0,0,0))
+    // console.log(scene.debugLine.quaternion)
+    this.body.quaternion.copy(scene.debugLine.quaternion)
+    this.body.position.z = 0
+    console.log(this.body)
     this.mesh.position.copy(this.body.position)
     this.mesh.quaternion.copy(this.body.quaternion)
+
+
+
+
   }
 }

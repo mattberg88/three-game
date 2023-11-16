@@ -4,7 +4,7 @@ import Camera from './classes/Camera.js';
 
 const scene = new Scene()
 const renderer = new WebGLRenderer({antialias: false})
-const camera = new Camera(renderer, false)
+const camera = new Camera(renderer, true)
 const seedScene = new SeedScene(camera)
 const clock = new Clock()
 const keys = {

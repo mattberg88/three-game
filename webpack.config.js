@@ -4,6 +4,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const buildPath = './build/';
 
 module.exports = {
+  devServer: {
+    port: 9000
+  },
   entry: ['./src/entry.js'],
   output: {
     path: path.join(__dirname, buildPath),
