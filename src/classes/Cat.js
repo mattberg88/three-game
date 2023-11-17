@@ -29,8 +29,12 @@ export default class Cat extends Group {
         const ballMaterial = new Material('ground')
         ballMaterial.friction = 1
         this.body = new Body({ mass, material: ballMaterial, position: startPos})
-        const shape = new Box(new Vec3(0.2, 0.1, 0.1))
-        this.body.addShape(shape, new Vec3(0, 0.1, 0))
+        const shape = new Sphere(0.2)
+        const shape2 = new Sphere(0.2)
+
+        this.body.addShape(shape, new Vec3(-0.1, 0.15, 0))
+        this.body.addShape(shape, new Vec3(0.1, 0.15, 0))
+
         this.body.angularFactor = new Vec3(0, 0, 0)
 
         this.downRay = new Raycaster(this.mesh.position, new Vec3(0, -1, 0), 0, 0.25)
@@ -54,16 +58,16 @@ export default class Cat extends Group {
 
   controlPlayer(keys, deltaTime) {
     if(!this.body) return
-    if(keys.right || keys.pointerRight) {
-      this.action.timeScale = 8
-      this.body.position.x += 0.02
-    }
-    if(keys.left || keys.pointerLeft) {
-      this.action.timeScale = 4
-      this.body.position.x -= 0.02
-    }
+    // if(keys.right || keys.pointerRight) {
+    //   this.action.timeScale = 8
+    //   this.body.position.x += 0.02
+    // }
+    // if(keys.left || keys.pointerLeft) {
+    //   this.action.timeScale = 4
+    //   this.body.position.x -= 0.02
+    // }
     if((keys.up || keys.pointerClick) && this.grounded) {
-      this.body.applyImpulse(this.mesh.up)
+      this.body.applyImpulse(new Vector3(0, 1, 0))
     }
     if(!keys.up && !keys.left && !keys.rdight && !keys.pointerClick && !keys.pointerLeft && !keys.pointerRight) {
       this.action.timeScale = 6
@@ -76,14 +80,14 @@ export default class Cat extends Group {
   }
 
   update(keys, deltaTime, scene) {
-    // if(this.body.position.x < -0.1 && this.grounded) {
-    //   this.action.timeScale = 7
-    //   this.body.position.x += 0.01
-    // }
-    // if(this.body.position.x > 0.1 && this.grounded) {
-    //   this.action.timeScale = 7
-    //   this.body.position.x -= 0.01
-    // }
+    if(this.body.position.x < -0.1 && this.grounded) {
+      this.action.timeScale = 8
+      this.body.position.x += 0.03
+    }
+    if(this.body.position.x > 0.1 && this.grounded) {
+      this.action.timeScale = 2
+      this.body.position.x -= 0.03
+    }
 
     if(!this.body) return
     this.controlPlayer(keys, deltaTime)

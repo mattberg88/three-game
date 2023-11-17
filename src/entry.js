@@ -83,6 +83,7 @@ const pointerdownHandler = (event) => {
   // keys.pointerClick = true
   keys.pointerPressTime = clock.getElapsedTime()
   // keys.pointerClick = true
+  keys.pointerClick = true
 
 
 
@@ -90,17 +91,17 @@ const pointerdownHandler = (event) => {
   const screenLeft = window.innerWidth/3
   const screenRight = window.innerWidth/3 * 2
 
-  const screenCenter = window.innerWidth/2
-  if(pointerX > screenLeft && pointerX < screenRight) {
-    keys.pointerClick = true
-  }
+  // const screenCenter = window.innerWidth/2
+  // if(pointerX > screenLeft && pointerX < screenRight) {
+  //   keys.pointerClick = true
+  // }
 
-  if(pointerX < screenLeft){
-    keys.pointerLeft = true
-  }
-  if(pointerX > screenRight){
-    keys.pointerRight = true
-  }
+  // if(pointerX < screenLeft){
+  //   keys.pointerLeft = true
+  // }
+  // if(pointerX > screenRight){
+  //   keys.pointerRight = true
+  // }
 
 }
 
@@ -122,8 +123,6 @@ window.addEventListener('keyup', keyupHandler);
 // window.addEventListener('mouseup', pointerupHandler);
 window.addEventListener('pointerdown', pointerdownHandler);
 window.addEventListener('pointerup', pointerupHandler);
-
-
 
 // dom
 document.body.style.margin = 0;
