@@ -55,17 +55,17 @@ export default class Cat extends Group {
   controlPlayer(keys, deltaTime) {
     if(!this.body) return
     if(keys.right || keys.pointerRight) {
-      this.action.timeScale = 7
-      this.body.position.x += 0.01
+      this.action.timeScale = 8
+      this.body.position.x += 0.02
     }
     if(keys.left || keys.pointerLeft) {
-      this.action.timeScale = 7
-      this.body.position.x -= 0.01
+      this.action.timeScale = 4
+      this.body.position.x -= 0.02
     }
     if((keys.up || keys.pointerClick) && this.grounded) {
-      this.body.applyImpulse(new Vec3(0,0.25,0))
+      this.body.applyImpulse(this.mesh.up)
     }
-    if(!keys.up && !keys.left && !keys.right && !keys.pointerClick && !keys.pointerLeft && !keys.pointerRight) {
+    if(!keys.up && !keys.left && !keys.rdight && !keys.pointerClick && !keys.pointerLeft && !keys.pointerRight) {
       this.action.timeScale = 6
     }
   }

@@ -22,7 +22,7 @@ const keys = {
 scene.add(seedScene);
 
 camera.position.set(0,3,5);
-camera.lookAt(new Vector3(0,0.6,0));
+camera.lookAt(new Vector3(0,1,0));
 
 renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -36,8 +36,8 @@ window.requestAnimationFrame(onAnimationFrameHandler);
 
 const windowResizeHanlder = () => {
   const { innerHeight, innerWidth } = window;
-  renderer.setSize(innerHeight, innerHeight);
-  camera.aspect = 1;
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
 };
 windowResizeHanlder();
@@ -80,30 +80,34 @@ const keyupHandler = (event) => {
 //   mousePos.copy( camera.position ).add( vec.multiplyScalar( distance ) );
 // }
 const pointerdownHandler = (event) => {
-  keys.pointerClick = true
+  // keys.pointerClick = true
   keys.pointerPressTime = clock.getElapsedTime()
+  // keys.pointerClick = true
 
 
 
   const pointerX = event.clientX
-  const screenCenter = window.innerWidth/2
-  // if(pointerX > screenLeft && pointerX < screenRight) {
-  //   keys.pointerClick = true
-  // }
+  const screenLeft = window.innerWidth/3
+  const screenRight = window.innerWidth/3 * 2
 
-  if(pointerX < screenCenter){
+  const screenCenter = window.innerWidth/2
+  if(pointerX > screenLeft && pointerX < screenRight) {
+    keys.pointerClick = true
+  }
+
+  if(pointerX < screenLeft){
     keys.pointerLeft = true
   }
-  if(pointerX > screenCenter){
+  if(pointerX > screenRight){
     keys.pointerRight = true
   }
 
 }
 
 const pointerupHandler = (event) => {
-  if(clock.getElapsedTime()- keys.pointerPressTime < 0.2) {
-    keys.pointerClick = true
-  }
+  // if(clock.getElapsedTime()- keys.pointerPressTime < 0.5) {
+  //   keys.pointerClick = true
+  // }
   keys.pointerLeft = false
   keys.pointerRight = false
   keys.pointerClick = false
