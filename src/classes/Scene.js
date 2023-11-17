@@ -54,7 +54,7 @@ export default class SeedScene extends Group {
       this.resetGame()
     }
     this.level.update(deltaTime)
-    this.cannonDebugger.update()
+    // this.cannonDebugger.update()
     this.world.fixedStep(deltaTime)
     if(this.player.mesh) {
       this.player.update(keys, deltaTime, this)
