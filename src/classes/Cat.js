@@ -18,7 +18,7 @@ export default class Cat extends Group {
         this.mesh = gltf.scene
 
         this.setMaterial(this.material);
-        this.mesh.scale.set(0.005,0.005,0.005)
+        this.mesh.scale.set(0.01,0.01,0.01)
 
         this.mixer = new AnimationMixer( gltf.scene )
         const clips = gltf.animations
@@ -29,8 +29,8 @@ export default class Cat extends Group {
         const ballMaterial = new Material('ground')
         ballMaterial.friction = 1
         this.body = new Body({ mass, material: ballMaterial, position: startPos})
-        const shape = new Box(new Vec3(0.1, 0.1, 0.1))
-        this.body.addShape(shape, new Vec3(0, 0.07, 0))
+        const shape = new Box(new Vec3(0.2, 0.1, 0.1))
+        this.body.addShape(shape, new Vec3(0, 0.1, 0))
         this.body.angularFactor = new Vec3(0, 0, 0)
 
         this.downRay = new Raycaster(this.mesh.position, new Vec3(0, -1, 0), 0, 0.25)
@@ -54,19 +54,19 @@ export default class Cat extends Group {
 
   controlPlayer(keys, deltaTime) {
     if(!this.body) return
-    // if(keys.right || keys.pointerRight) {
-    //   this.action.timeScale = 7
-    //   this.setPosition(new Vec3(this.mesh.position.x + 1 * deltaTime, this.mesh.position.y, this.position.z))
-    // }
-    // if(keys.left || keys.pointerLeft) {
-    //   this.action.timeScale = 2
-    //   this.setPosition(new Vec3(this.mesh.position.x - 1 * deltaTime, this.mesh.position.y, this.position.z))
-    // }
+    if(keys.right || keys.pointerRight) {
+      this.action.timeScale = 7
+      this.body.position.x += 0.01
+    }
+    if(keys.left || keys.pointerLeft) {
+      this.action.timeScale = 7
+      this.body.position.x -= 0.01
+    }
     if((keys.up || keys.pointerClick) && this.grounded) {
-      this.body.applyImpulse(new Vec3(0,0.2,0))
+      this.body.applyImpulse(new Vec3(0,0.25,0))
     }
     if(!keys.up && !keys.left && !keys.right && !keys.pointerClick && !keys.pointerLeft && !keys.pointerRight) {
-      this.action.timeScale = 600 * deltaTime
+      this.action.timeScale = 6
     }
   }
 
@@ -76,6 +76,7 @@ export default class Cat extends Group {
   }
 
   update(keys, deltaTime, scene) {
+    console.log(deltaTime)
     // if(this.body.position.x < -0.1 && this.grounded) {
     //   this.mesh.translateX(0.01)
     //   this.body.position.copy(this.mesh.position)
@@ -100,7 +101,7 @@ export default class Cat extends Group {
     }else if(this.grounded) {
       this.setMaterial(this.greenMaterial)
     }else {
-      this.action.timeScale = 50 * deltaTime
+      this.action.timeScale = 5
       this.setMaterial(this.material)
     }
     this.mixer.update(deltaTime);
@@ -113,13 +114,19 @@ export default class Cat extends Group {
 
 
     // }
+
     scene.debugLine.position.set(this.body.position.x, this.body.position.y, this.body.position.z)
 
     scene.debugLine.lookAt(new Vector3(0,0,0))
-    // console.log(scene.debugLine.quaternion)
+    if(scene.debugLine.rotation.z > 0 && scene.debugLine.position.y > 0) {
+      scene.debugLine.rotateZ(Math.PI)
+    }
+    scene.debugLine.rotateY(-Math.PI/2)
+    // scene.debugLine.rotateX(-Math.PI/2)
+    scene.debugLine.rotateZ(Math.PI/2)
+
     this.body.quaternion.copy(scene.debugLine.quaternion)
     this.body.position.z = 0
-    console.log(this.body)
     this.mesh.position.copy(this.body.position)
     this.mesh.quaternion.copy(this.body.quaternion)
 

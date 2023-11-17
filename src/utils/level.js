@@ -58,8 +58,8 @@ const getNextChar = (lastChar) => {
       case 2: return '  '
       case 3: return '|'
       case 4: return '-'
-      case 5: return '-'
-      case 6: return '-'
+      case 5: return ' '
+      case 6: return '|'
 
       default: return '-'
     }

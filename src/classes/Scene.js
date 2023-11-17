@@ -4,6 +4,7 @@ import BasicLights from './Lights.js';
 import LevelGenerator from './LevelGenerator.js';
 import CannonDebugger from 'cannon-es-debugger'
 import Cat from './Cat.js';
+import { OrientationControls } from '../utils/orientationControls.js'
 
 export default class SeedScene extends Group {
   constructor(camera) {
@@ -19,6 +20,8 @@ export default class SeedScene extends Group {
     this.add(this.level, lights, this.player);
     this.speedFactor = 0
     this.makeDebugLine()
+    const obj = new Group()
+    // this.cont = new OrientationControls(this.camera)
   }
 
   makeDebugLine() {
@@ -29,6 +32,7 @@ export default class SeedScene extends Group {
     const geometry = new BufferGeometry().setFromPoints( points )
     // geometry.rotateX(Math.PI/2)
     this.debugLine = new Line( geometry, lineMat )
+
     this.add( this.debugLine )
   }
 

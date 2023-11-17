@@ -19,8 +19,8 @@ const keys = {
 
 scene.add(seedScene);
 
-camera.position.set(0,3,4);
-camera.lookAt(new Vector3(0,0,0));
+camera.position.set(0,3,5);
+camera.lookAt(new Vector3(0,1,0));
 
 renderer.setPixelRatio(window.devicePixelRatio);
 
