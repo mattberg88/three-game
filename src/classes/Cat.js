@@ -76,17 +76,13 @@ export default class Cat extends Group {
   }
 
   update(keys, deltaTime, scene) {
-    console.log(deltaTime)
     // if(this.body.position.x < -0.1 && this.grounded) {
-    //   this.mesh.translateX(0.01)
-    //   this.body.position.copy(this.mesh.position)
-    //   this.action.timeScale += 0.1
+    //   this.action.timeScale = 7
+    //   this.body.position.x += 0.01
     // }
-    // if(this.body.position.x > 0.1) {
-    //   this.mesh.translateX(-0.01)
-    //   this.body.position.copy(this.mesh.position)
-
-    //   this.action.timeScale -= 0.1
+    // if(this.body.position.x > 0.1 && this.grounded) {
+    //   this.action.timeScale = 7
+    //   this.body.position.x -= 0.01
     // }
 
     if(!this.body) return
@@ -105,27 +101,18 @@ export default class Cat extends Group {
       this.setMaterial(this.material)
     }
     this.mixer.update(deltaTime);
+    const temp = new Group()
+    temp.position.set(this.body.position.x, this.body.position.y, this.body.position.z)
 
-    // if(scene.debugLine) {
-    //   const bodyPos = scene.player.body.position
-    //   scene.debugLine.position.set(bodyPos.x, bodyPos.y, bodyPos.z)
-    //   const centerAngle = this.mesh.position.angleTo(new Vector3(0,-4,0))
-    //   console.log(scene.debugLine)
-
-
-    // }
-
-    scene.debugLine.position.set(this.body.position.x, this.body.position.y, this.body.position.z)
-
-    scene.debugLine.lookAt(new Vector3(0,0,0))
-    if(scene.debugLine.rotation.z > 0 && scene.debugLine.position.y > 0) {
-      scene.debugLine.rotateZ(Math.PI)
+    temp.lookAt(new Vector3(0,0,0))
+    if(temp.rotation.z > 0 && temp.position.y > 0) {
+      temp.rotateZ(Math.PI)
     }
-    scene.debugLine.rotateY(-Math.PI/2)
-    // scene.debugLine.rotateX(-Math.PI/2)
-    scene.debugLine.rotateZ(Math.PI/2)
+    temp.rotateY(-Math.PI/2)
+    // temp.rotateX(-Math.PI/2)
+    temp.rotateZ(Math.PI/2)
 
-    this.body.quaternion.copy(scene.debugLine.quaternion)
+    this.body.quaternion.copy(temp.quaternion)
     this.body.position.z = 0
     this.mesh.position.copy(this.body.position)
     this.mesh.quaternion.copy(this.body.quaternion)

@@ -4,7 +4,7 @@ import Camera from './classes/Camera.js';
 
 const scene = new Scene()
 const renderer = new WebGLRenderer({antialias: false})
-const camera = new Camera(renderer, true)
+const camera = new Camera(renderer, false)
 const seedScene = new SeedScene(camera)
 const clock = new Clock()
 const keys = {
@@ -14,13 +14,15 @@ const keys = {
   pause: false,
   pointerLeft: false,
   pointerRight: false,
-  pointerClick: false
+  pointerClick: false,
+  pointerPower: 0,
+  pointerPressTime: clock.getElapsedTime()
 }
 
 scene.add(seedScene);
 
 camera.position.set(0,3,5);
-camera.lookAt(new Vector3(0,1,0));
+camera.lookAt(new Vector3(0,0.6,0));
 
 renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -34,8 +36,8 @@ window.requestAnimationFrame(onAnimationFrameHandler);
 
 const windowResizeHanlder = () => {
   const { innerHeight, innerWidth } = window;
-  renderer.setSize(innerWidth, innerHeight);
-  camera.aspect = innerWidth / innerHeight;
+  renderer.setSize(innerHeight, innerHeight);
+  camera.aspect = 1;
   camera.updateProjectionMatrix();
 };
 windowResizeHanlder();
@@ -77,32 +79,34 @@ const keyupHandler = (event) => {
 //   const distance = - camera.position.z / vec.z;
 //   mousePos.copy( camera.position ).add( vec.multiplyScalar( distance ) );
 // }
-
 const pointerdownHandler = (event) => {
   keys.pointerClick = true
+  keys.pointerPressTime = clock.getElapsedTime()
 
 
 
-  // const pointerX = event.clientX
-  // const screenLeft = window.innerWidth/3
-  // const screenRight = window.innerWidth/3 * 2
-
-  // if(pointerX < screenLeft){
-  //   keys.pointerLeft = true
-  // }
-  // if(pointerX > screenRight){
-  //   keys.pointerRight = true
-  // }
+  const pointerX = event.clientX
+  const screenCenter = window.innerWidth/2
   // if(pointerX > screenLeft && pointerX < screenRight) {
   //   keys.pointerClick = true
   // }
+
+  if(pointerX < screenCenter){
+    keys.pointerLeft = true
+  }
+  if(pointerX > screenCenter){
+    keys.pointerRight = true
+  }
+
 }
 
 const pointerupHandler = (event) => {
+  if(clock.getElapsedTime()- keys.pointerPressTime < 0.2) {
+    keys.pointerClick = true
+  }
   keys.pointerLeft = false
   keys.pointerRight = false
   keys.pointerClick = false
-  keys.pointer = false
 }
 
 
