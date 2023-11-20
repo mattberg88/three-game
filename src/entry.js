@@ -29,7 +29,7 @@ window.addEventListener('resize', windowResizeHanlder);
 window.addEventListener('wheel', function(evt) {
   evt.preventDefault()
   seedScene.wheel.scroll(evt.deltaY/100)
-  seedScene.cat.scroll(evt.deltaY/1000)
+  seedScene.cat.scroll(evt.deltaY/500)
 }, { passive: false });
 
 let startVal
