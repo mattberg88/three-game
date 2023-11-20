@@ -24,8 +24,12 @@ export default class WheelObj extends Group {
       if (o.isMesh) o.material = material;
     });
   }
-  scroll(ydiff) {
+  drag(ydiff) {
     console.log('wheel', ydiff)
     this.mesh.rotation.set(Math.PI/2, -ydiff/100, 0)
+  }
+  scroll(ydiff) {
+    console.log('wheel', ydiff)
+    this.mesh.rotateY(ydiff/100)
   }
 }

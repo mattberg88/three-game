@@ -126,6 +126,15 @@ import { DragControls } from 'three/addons/controls/DragControls.js';
   // window.addEventListener('mouseup', pointerupHandler);
   window.addEventListener('pointerdown', pointerdownHandler);
   window.addEventListener('pointerup', pointerupHandler);
+  window.addEventListener("wheel", function(evt) {
+    evt.preventDefault()
+    console.log(evt.deltaY)
+    var yUp = evt.clientY;
+    var yDiff = yDown - yUp;
+    seedScene.level.wheel.scroll(evt.deltaY)
+    yDown = null;
+  }, { passive: false });
+
   window.addEventListener('touchstart', (evt) => {
     evt.preventDefault()
       const firstTouch = getTouches(evt)[0];
@@ -135,7 +144,7 @@ import { DragControls } from 'three/addons/controls/DragControls.js';
     evt.preventDefault()
     var yUp = evt.touches[0].clientY;
     var yDiff = yDown - yUp;
-    seedScene.level.wheel.scroll(yDiff)
+    seedScene.level.wheel.drag(yDiff)
     yDown = null;
   }, { passive: false });
   var yDown = null;
