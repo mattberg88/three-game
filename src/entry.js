@@ -7,7 +7,7 @@ const renderer = new WebGLRenderer({antialias: false})
 const camera = new Camera(renderer, false)
 const seedScene = new SeedScene(camera)
 scene.add(seedScene);
-camera.position.set(-2,0.8,0);
+camera.position.set(-1.3,0.8,0);
 camera.lookAt(new Vector3(0,1,0));
 
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -30,21 +30,20 @@ window.addEventListener('wheel', function(evt) {
   evt.preventDefault()
   seedScene.wheel.scroll(evt.deltaY/100)
   seedScene.cat.scroll(evt.deltaY/1000)
-
 }, { passive: false });
+
 let startVal
 window.addEventListener('touchstart', (evt) => {
   evt.preventDefault()
-    startVal = getTouches(evt)[0].clientY;
-    console.log(startVal)
+  startVal = getTouches(evt)[0].clientY;
 }, { passive: false })
 
 window.addEventListener('touchmove', (evt) => {
   evt.preventDefault()
   const diff = startVal - getTouches(evt)[0].clientY
-  seedScene.wheel.drag(diff/5000)
-  seedScene.cat.drag(diff/10000)
-
+  startVal = getTouches(evt)[0].clientY;
+  seedScene.wheel.scroll(diff/250)
+  seedScene.cat.scroll(diff/500)
 }, { passive: false });
 
 function getTouches(evt) {

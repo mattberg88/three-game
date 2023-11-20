@@ -23,11 +23,7 @@ export default class WheelObj extends Group {
       if (o.isMesh) o.material = material;
     });
   }
-  drag(ydiff) {
-    console.log('wheel', ydiff)
-    this.particles.rotation.set(Math.PI/2, 0, this.particles.rotation.z+ydiff)
-    this.mesh.rotation.set(Math.PI/2, 0, this.mesh.rotation.z+ydiff)
-  }
+
   scroll(ydiff) {
     this.particles.rotation.set(Math.PI/2, 0, this.particles.rotation.z+ydiff)
     this.mesh.rotation.set(Math.PI/2, 0, this.mesh.rotation.z+ydiff)

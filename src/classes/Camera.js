@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 export default class Camera extends PerspectiveCamera {
   constructor(renderer, orbit) {
     super();
+    this.setFocalLength(20)
     if(orbit) {
       const controls = new OrbitControls( this, renderer.domElement );
       controls.target.set( 0, 0.5, 0 );
