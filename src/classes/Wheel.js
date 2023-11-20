@@ -25,12 +25,12 @@ export default class WheelObj extends Group {
   }
   drag(ydiff) {
     console.log('wheel', ydiff)
-    this.particles.rotation.set(Math.PI/2, 0, -ydiff/100)
-    this.mesh.rotation.set(Math.PI/2, 0, -ydiff/100)
+    this.particles.rotation.set(Math.PI/2, 0, this.particles.rotation.z+ydiff)
+    this.mesh.rotation.set(Math.PI/2, 0, this.mesh.rotation.z+ydiff)
   }
   scroll(ydiff) {
-    console.log('wheel', ydiff)
-    this.particles.rotateY(ydiff/100)
-    this.mesh.rotateZ(-ydiff/100)
+    this.particles.rotation.set(Math.PI/2, 0, this.particles.rotation.z+ydiff)
+    this.mesh.rotation.set(Math.PI/2, 0, this.mesh.rotation.z+ydiff)
+
   }
 }

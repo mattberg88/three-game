@@ -28,11 +28,11 @@ export default class Cat extends Group {
   }
 
   drag(ydiff) {
-    this.mixer.setTime(-ydiff/100);
+    this.mixer.setTime(this.mixer.time+=ydiff);
   }
 
   scroll(yDiff) {
-    this.mixer.setTime(this.mixer.time += yDiff/1000);
+    this.mixer.setTime(this.mixer.time += yDiff);
   }
 
 }
