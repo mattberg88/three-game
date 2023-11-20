@@ -41,6 +41,8 @@ window.addEventListener('touchstart', (evt) => {
 window.addEventListener('touchmove', (evt) => {
   evt.preventDefault()
   seedScene.wheel.drag(evt.touches[0].clientY)
+  seedScene.cat.drag(evt.touches[0].clientY)
+
 }, { passive: false });
 
 function getTouches(evt) {
