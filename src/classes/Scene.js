@@ -1,27 +1,31 @@
 import { Group, Vector3, LineBasicMaterial, BufferGeometry, Line } from 'three';
-import {World, Vec3} from 'cannon-es'
 import BasicLights from './Lights.js';
 import LevelGenerator from './LevelGenerator.js';
 import CannonDebugger from 'cannon-es-debugger'
 import Cat from './Cat.js';
-import { OrientationControls } from '../utils/orientationControls.js'
 
 export default class SeedScene extends Group {
   constructor(camera) {
     super();
+    // let physicsWorld
+    // let m_collisionConfiguration = new ammo.btDefaultCollisionConfiguration();
+    // let m_dispatcher = new ammo.btCollisionDispatcher(m_collisionConfiguration);
+    // let m_broadphase = new ammo.btDbvtBroadphase();
+    // let m_constraintSolver = new ammo.btSequentialImpulseConstraintSolver();
+
+    // physicsWorld = new ammo.btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_constraintSolver, m_collisionConfiguration);
+    // physicsWorld.setGravity(new ammo.btVector3(0, -9.810, 0));
+
     this.camera = camera
-    this.world = new World({ gravity: new Vec3(0, -9.82, 0) })
-    this.cannonDebugger = new CannonDebugger(this, this.world, {})
     const lights = new BasicLights();
-    this.level = new LevelGenerator(this.world)
+    this.level = new LevelGenerator()
     this.level.loadLevel()
-    this.player = new Cat(this.world, new Vector3(0,3,0), 1)
+    this.player = new Cat(new Vector3(-0.7,0.7,0))
     this.updateList = [this.level]
     this.add(this.level, lights, this.player);
     this.speedFactor = 0
     this.makeDebugLine()
     const obj = new Group()
-    // this.cont = new OrientationControls(this.camera)
   }
 
   makeDebugLine() {
@@ -39,8 +43,8 @@ export default class SeedScene extends Group {
   resetGame() {
     this.player.removePlayer()
     this.level.removeAll()
-    this.player = new Cat(this.world, new Vector3(0,3,0), 1)
-    this.level = new LevelGenerator(this.world)
+    this.player = new Cat(new Vector3(0,3,0))
+    this.level = new LevelGenerator()
     this.level.loadLevel()
 
     this.updateList = [this.level]
@@ -54,8 +58,6 @@ export default class SeedScene extends Group {
       this.resetGame()
     }
     this.level.update(deltaTime)
-    this.cannonDebugger.update()
-    this.world.fixedStep(deltaTime)
     if(this.player.mesh) {
       this.player.update(keys, deltaTime, this)
     }

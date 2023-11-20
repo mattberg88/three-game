@@ -4,10 +4,10 @@ import LevelObject from './LevelObject.js';
 import STREET from '../assets/street.glb'
 import STREETTEX from '../assets/BrickNorms.jpeg'
 import {generateString} from '../utils/level.js'
-import Wheel from './Wheel.js';
+import WheelObj from './WheelObj.js';
 
 export default class LevelGenerator extends Group {
-  constructor(world) {
+  constructor() {
     super();
     const streetObj = new LevelObject('street', STREET, STREETTEX, new Vector3(0.5, 0.5, 0.5))
     this.levelLoaders = [streetObj.load]
@@ -15,18 +15,15 @@ export default class LevelGenerator extends Group {
     levelString += ''
     this.levelCode = levelString.split('')
     this.levelConfigs = this.levelCode.map((code , index)=> this.getObjects(code, index))
-    this.wheel = new Wheel(world)
+    this.wheel = new WheelObj()
     this.levelArray = [this.wheel]
 
     this.characterIndex = 0
-    this.world = world
-    this.body = new Body({ mass: 0})
     this.speed = 0.8
-    this.world.addBody(this.body)
-    this.world.addBody(this.wheel.body)
     this.rad = 0
     this.radIncrement = 2
     this.paused = false
+    console.log(this.wheel)
     this.add(this.wheel)
   }
 
@@ -49,8 +46,7 @@ export default class LevelGenerator extends Group {
         pivot.add( meshClone, temp )
         temp.getWorldPosition(conf.shapePosition)
         temp.getWorldQuaternion(conf.shapeQuaternion)
-        this.wheel.body.addShape(conf.shape, conf.shapePosition, conf.shapeQuaternion)
-        this.wheel.add(pivot)
+        // this.wheel.add(pivot)
         this.levelArray.push(meshClone)
       })
     })
@@ -62,7 +58,6 @@ export default class LevelGenerator extends Group {
       scale: new Vector3(0.5,0.5,0.5),
       position: new Vector3(0,height,0),
       quaternion: new Quaternion().setFromEuler(new Euler(Math.PI/2,0,Math.PI/2)),
-      shape: new Box(new Vector3(0.5,0.5,0.2)),
       shapePosition: new Vector3(0, height + 0.3, 0),
       shapeQuaternion: new Quaternion().setFromEuler(new Euler(Math.PI/2,0,Math.PI/2)),
     }
@@ -82,15 +77,12 @@ export default class LevelGenerator extends Group {
     this.levelArray.forEach(levelObject => {
       this.remove(levelObject)
     })
-    this.world.removeBody(this.body)
-    this.world.removeBody(this.wheel.body)
   }
 
 
   update(deltaTime) {
     if(this.paused) return
-    this.wheel.rotateZ(this.speed * deltaTime)
-    this.wheel.body.quaternion.copy(this.wheel.quaternion)
+    // this.wheel.rotateZ(this.speed * deltaTime)
 
     // this.position.setX(this.position.x - this.speed * deltaTime * 100)
     this.speed += 0.0001

@@ -12,6 +12,12 @@ module.exports = {
     path: path.join(__dirname, buildPath),
     filename: '[name].[hash].js'
   },
+  resolve: {
+    fallback: {
+      'fs': false,
+      'path': false,
+    }
+  },
   mode: 'development',
   target: 'web',
   devtool: 'source-map',
