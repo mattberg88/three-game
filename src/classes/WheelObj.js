@@ -16,7 +16,6 @@ export default class WheelObj extends Group {
         this.mesh.rotation.set(Math.PI/2,0,0)
 
         this.add(this.mesh);
-        this.mesh.position.set(new Vector3(0,0,0))
       },
     );
   }

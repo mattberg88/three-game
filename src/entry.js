@@ -126,12 +126,18 @@ import { DragControls } from 'three/addons/controls/DragControls.js';
   // window.addEventListener('mouseup', pointerupHandler);
   window.addEventListener('pointerdown', pointerdownHandler);
   window.addEventListener('pointerup', pointerupHandler);
-  window.addEventListener('touchstart', handleTouchStart, false);
-  window.addEventListener('touchmove', handleTouchMove, false);
-  window.addEventListener('scroll', () => {
-    console.log('scroll')
-  });
-  var xDown = null;
+  window.addEventListener('touchstart', (evt) => {
+    evt.preventDefault()
+      const firstTouch = getTouches(evt)[0];
+      yDown = firstTouch.clientY;
+  }, { passive: false })
+  window.addEventListener('touchmove', (evt) => {
+    evt.preventDefault()
+    var yUp = evt.touches[0].clientY;
+    var yDiff = yDown - yUp;
+    seedScene.level.wheel.scroll(yDiff)
+    yDown = null;
+  }, { passive: false });
   var yDown = null;
 
   function getTouches(evt) {
@@ -139,42 +145,6 @@ import { DragControls } from 'three/addons/controls/DragControls.js';
            evt.originalEvent.touches; // jQuery
   }
 
-  function handleTouchStart(evt) {
-      const firstTouch = getTouches(evt)[0];
-      xDown = firstTouch.clientX;
-      yDown = firstTouch.clientY;
-  };
-
-  function handleTouchMove(evt) {
-      // if ( ! xDown || ! yDown ) {
-      //     return;
-      // }
-
-      var xUp = evt.touches[0].clientX;
-      var yUp = evt.touches[0].clientY;
-
-      var xDiff = xDown - xUp;
-      var yDiff = yDown - yUp;
-      seedScene.level.wheel.scroll(yDiff)
-      // if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {/*most significant*/
-      //     if ( xDiff > 0 ) {
-      //         /* right swipe */
-      //     } else {
-      //         /* left swipe */
-      //     }
-      // } else {
-      //     if ( yDiff > 0 ) {
-      //       seedScene.level.wheel.scroll(yDiff)
-      //        console.log('swipedown')
-
-      //     } else {
-      //         /* up swipe */
-      //     }
-      // }
-      /* reset values */
-      xDown = null;
-      yDown = null;
-  };
 // add event listener to highlight dragged objects
 
 // controls.addEventListener( 'dragstart', function ( event ) {
