@@ -12,12 +12,12 @@ export default class LevelObject extends Group {
     this.load = this.loader.loadAsync(this.obj).then(loaded => this.configure(loaded))
   }
   configure(loadedObj) {
-      const texLoader = new TextureLoader()
-      const texture = texLoader.load(this.tex)
-      this.mesh = loadedObj.scene.children[0]
-      this.mesh.material = new MeshPhongMaterial({normalMap: texture, color: 'gray'})
-      this.mesh.scale.copy(this.scl)
-      this.add(this.mesh);
-      return this
+    const texLoader = new TextureLoader()
+    const texture = texLoader.load(this.tex)
+    this.mesh = loadedObj.scene.children[0]
+    this.mesh.material = new MeshPhongMaterial({normalMap: texture, color: 'gray'})
+    this.mesh.scale.copy(this.scl)
+    this.add(this.mesh);
+    return this
   }
 }

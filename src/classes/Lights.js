@@ -3,19 +3,14 @@ import { Group, SpotLight, PointLight, AmbientLight, HemisphereLight } from 'thr
 export default class BasicLights extends Group {
   constructor() {
     super();
-
     const point = new PointLight(0xFFFFFF, 1, 10, 1);
     const dir = new SpotLight(0xFFFFFF, 0.8, 7, 0.8, 1, 1);
     const ambi = new AmbientLight( 0x404040 , 1);
     const hemi = new HemisphereLight( 0xffffbb, 0x080820, 1.15 )
-
     dir.position.set(5, 1, 2);
     dir.target.position.set(0,0,0);
-
     point.position.set(0, 1, 5);
     point.intensity = 1;
-
     this.add(point, ambi, hemi, dir);
-
   }
 }
